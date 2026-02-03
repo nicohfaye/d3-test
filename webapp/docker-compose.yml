@@ -1,0 +1,21 @@
+services:
+  webapp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "80:5173"
+    volumes:
+      - .:/app
+      - /app/node_modules # prevent local node_modules from mounting
+    environment:
+      - NODE_ENV=development
+    restart: "on-failure"
+    networks:
+      app_net:
+        aliases:
+          - webapp
+
+networks:
+  app_net:
+    name: app_network
