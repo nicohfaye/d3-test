@@ -1,7 +1,7 @@
-import { ComponentExample } from "@/components/component-example";
+import { D3Demo } from "@/components/d3-demo";
 
 export function App() {
-return <ComponentExample />;
+  return <D3Demo />;
 }
 
 export default App;
