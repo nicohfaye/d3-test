@@ -100,7 +100,7 @@ export function D3ScatterPlot({
       .attr("fill", color)
       .attr("opacity", 0.7)
       .attr("stroke", color)
-      .attr("stroke-width", 2)
+      .attr("stroke-width", 0.5)
       .transition()
       .duration(750)
       .delay((_, i) => i * 30)

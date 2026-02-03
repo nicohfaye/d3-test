@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ResponsiveBarChart } from "./responsive-bar-chart";
 import { ResponsiveScatterPlot } from "./responsive-scatter-plot";
+import { D3IrisScatterPlot } from "./d3-iris-scatter";
 import { Button } from "./ui/button";
 import {
   Card,
@@ -11,7 +12,7 @@ import {
   CardTitle,
 } from "./ui/card";
 
-type ChartType = "bar" | "scatter";
+type ChartType = "bar" | "scatter" | "iris";
 
 const initialBarData = [
   { label: "Jan", value: 30 },
@@ -42,25 +43,27 @@ function generateRandomScatterData() {
   }));
 }
 
+const chartDescriptions: Record<ChartType, string> = {
+  bar: "Interactive bar chart with animated transitions",
+  scatter: "Scatter plot with hover tooltips",
+  iris: "Iris dataset: sepal width vs length by species (with shapes)",
+};
+
 export function D3Demo() {
   const [chartType, setChartType] = useState<ChartType>("bar");
   const [barData, setBarData] = useState(initialBarData);
   const [scatterData, setScatterData] = useState(initialScatterData);
 
   return (
-    <div className="flex flex-col items-center gap-6 p-4 md:p-8 w-full max-w-4xl mx-auto">
+    <div className="flex flex-col items-center gap-6 p-4 md:p-8 w-full max-w-5xl mx-auto">
       <Card className="w-full">
         <CardHeader>
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex flex-col gap-4">
             <div>
               <CardTitle>D3 + React + TypeScript Demo</CardTitle>
-              <CardDescription>
-                {chartType === "bar"
-                  ? "Interactive bar chart with animated transitions"
-                  : "Scatter plot with hover tooltips"}
-              </CardDescription>
+              <CardDescription>{chartDescriptions[chartType]}</CardDescription>
             </div>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               <Button
                 variant={chartType === "bar" ? "default" : "outline"}
                 size="sm"
@@ -75,36 +78,54 @@ export function D3Demo() {
               >
                 Scatter Plot
               </Button>
+              <Button
+                variant={chartType === "iris" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setChartType("iris")}
+              >
+                Iris Dataset
+              </Button>
             </div>
           </div>
         </CardHeader>
 
         <CardContent>
-          {chartType === "bar" ? (
+          {chartType === "bar" && (
             <ResponsiveBarChart
               data={barData}
               aspectRatio={16 / 9}
               minHeight={300}
             />
-          ) : (
+          )}
+          {chartType === "scatter" && (
             <ResponsiveScatterPlot
               data={scatterData}
               aspectRatio={16 / 9}
               minHeight={300}
             />
           )}
+          {chartType === "iris" && (
+            <D3IrisScatterPlot aspectRatio={16 / 10} minHeight={400} />
+          )}
         </CardContent>
 
         <CardFooter>
-          <Button
-            onClick={() =>
-              chartType === "bar"
-                ? setBarData(generateRandomBarData())
-                : setScatterData(generateRandomScatterData())
-            }
-          >
-            Randomize Data
-          </Button>
+          {chartType !== "iris" && (
+            <Button
+              onClick={() =>
+                chartType === "bar"
+                  ? setBarData(generateRandomBarData())
+                  : setScatterData(generateRandomScatterData())
+              }
+            >
+              Randomize Data
+            </Button>
+          )}
+          {chartType === "iris" && (
+            <p className="text-sm text-muted-foreground">
+              Showing 60 samples from Fisher's Iris dataset (20 per species)
+            </p>
+          )}
         </CardFooter>
       </Card>
 
